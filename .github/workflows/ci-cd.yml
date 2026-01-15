@@ -15,27 +15,25 @@ jobs:
         with:
           node-version: 20
 
-      - run: npm install
+      - run: npm ci
+        working-directory: backend
 
-      - name: Unit tests
-        run: npm test
+      - run: npm test
+        working-directory: backend
 
-      - name: Start app
-        run: |
+      - run: |
           npm start &
           sleep 5
+        working-directory: backend
 
-      - name: E2E tests
-        run: npm run test:e2e
+      - run: npm run test:e2e
+        working-directory: backend
 
-      - name: Docker login
-        uses: docker/login-action@v3
+      - uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build image
-        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/travelnow:latest .
+      - run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/travelnow:latest .
 
-      - name: Push image
-        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/travelnow:latest
+      - run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/travelnow:latest
